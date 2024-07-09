@@ -63,4 +63,6 @@ const indianStates = [
 ];
 
 
-export default {fieldsOfStudy,educationStatuses,indianStates};
+const dropdownData = { fieldsOfStudy, educationStatuses, indianStates };
+
+export default dropdownData;

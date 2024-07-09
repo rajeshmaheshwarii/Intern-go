@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Style from "../styles/dashboard.module.css"
+import React, { useState, useEffect, useCallback } from "react";
+import Style from "../styles/dashboard.module.css";
 import {
   Box,
   Grid,
@@ -16,8 +16,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import BackIcon from '@mui/icons-material/KeyboardBackspace';
-import DoneIcon from '@mui/icons-material/Done';
+import BackIcon from "@mui/icons-material/KeyboardBackspace";
+import DoneIcon from "@mui/icons-material/Done";
 import Header from "@/components/common/Header";
 import internshipsData from "@/data/courses";
 import { useRouter } from "next/router";
@@ -34,22 +34,11 @@ const Dashboard = () => {
       ? localStorage.getItem("isLoggedIn") === "true"
       : false;
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && isLoggedIn && userId) {
-      fetchUserInternships();
-    } else {
-        const d = window.confirm("Login to access your dashboard");
-        if(d){
-            router.push("/login");
-        }
-      
-    }
-  }, [router]);
   const handleBacktoInternships = () => {
     router.push("/Internships");
-    
-  } 
-  const fetchUserInternships = async () => {
+  };
+
+  const fetchUserInternships = useCallback(async () => {
     try {
       const response = await fetch(
         `http://10.201.0.169:5000/user_internships/${userId}`
@@ -71,7 +60,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching user internships:", error);
     }
-  };
+  }, [userId]);
 
   const handleClickOpen = (internship) => {
     setSelectedInternship(internship);
@@ -82,6 +71,17 @@ const Dashboard = () => {
     setOpen(false);
     setSelectedInternship(null);
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && isLoggedIn && userId) {
+      fetchUserInternships();
+    } else {
+      const d = window.confirm("Login to access your dashboard");
+      if (d) {
+        router.push("/login");
+      }
+    }
+  }, [fetchUserInternships, isLoggedIn, userId, router]);
 
   const handleMarkComplete = async () => {
     try {
@@ -128,7 +128,7 @@ const Dashboard = () => {
     <>
       <Header />
       <Container maxWidth="lg" sx={{ mt: "70px", mb: 4, minHeight: "100vh" }}>
-        <Typography variant="h5" gutterBottom sx={{fontSize:'25px'}}>
+        <Typography variant="h5" gutterBottom sx={{ fontSize: "25px" }}>
           My Dashboard
         </Typography>
         <Grid container spacing={4} mt={2}>
@@ -195,7 +195,12 @@ const Dashboard = () => {
                     internships and join to get started!
                   </Typography>
                   <Box sx={{ textAlign: "center", mt: 5 }}>
-                   <p className={Style.backButton} onClick={handleBacktoInternships}><BackIcon sx={{mr:"5px"}}/> Back to Internships</p>
+                    <p
+                      className={Style.backButton}
+                      onClick={handleBacktoInternships}
+                    >
+                      <BackIcon sx={{ mr: "5px" }} /> Back to Internships
+                    </p>
                   </Box>
                 </CardContent>
               </Card>
@@ -233,10 +238,11 @@ const Dashboard = () => {
                       <Button
                         variant="contained"
                         size="small"
-                        sx={{ mt: 1,backgroundColor:'#0056b3' }}
+                        sx={{ mt: 1, backgroundColor: "#0056b3" }}
                         onClick={() => handleClickOpen(internship)}
                       >
-                        Mark as Complete <DoneIcon sx={{fontSize:"20px",pl:"5px"}}/>
+                        Mark as Complete{" "}
+                        <DoneIcon sx={{ fontSize: "20px", pl: "5px" }} />
                       </Button>
                     )}
                   </CardContent>
@@ -253,8 +259,11 @@ const Dashboard = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-           
-            <Button onClick={handleMarkComplete} color="secondary" variant="contained">
+            <Button
+              onClick={handleMarkComplete}
+              color="secondary"
+              variant="contained"
+            >
               Confirm
             </Button>
             <Button onClick={handleClose} color="error" variant="contained">

@@ -22,7 +22,7 @@ const SignInSide = () => {
     password: "",
   });
 
-  const [UserName,setUserName] = useState(null);
+  const [UserName, setUserName] = useState(null);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState("");
@@ -35,9 +35,9 @@ const SignInSide = () => {
     }));
   };
 
-  const handleGoToRegisterPage =()=>{
-    router.push("/register")
-  }
+  const handleGoToRegisterPage = () => {
+    router.push("/register");
+  };
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleSubmit = async (event) => {
@@ -57,8 +57,8 @@ const SignInSide = () => {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("name", data.name); // Store user name from server
         localStorage.setItem("email", data.email);
-        localStorage.setItem("userID",data.id);
-        
+        localStorage.setItem("userID", data.id);
+
         setIsLoggedIn(true);
         await router.push("/dashboard"); // Redirect to dashbaord page after successful login
       } else {
@@ -73,7 +73,6 @@ const SignInSide = () => {
     }
 
     // Reset form fields
-    
   };
 
   useEffect(() => {
@@ -85,7 +84,7 @@ const SignInSide = () => {
       setIsLoggedIn(true);
       router.push("/Internships");
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
@@ -138,7 +137,12 @@ const SignInSide = () => {
                 <Typography component="h1" variant="h5">
                   Log In
                 </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 1 }}
+                >
                   <TextField
                     margin="normal"
                     required
@@ -197,8 +201,11 @@ const SignInSide = () => {
                   >
                     <Link href="#">Forget Password?</Link>
                     <p>
-                      Don't have an account?{" "}
-                      <span style={{ color: "blue",cursor:"pointer" }} onClick={handleGoToRegisterPage}>
+                      Don&apos;t have an account?{" "}
+                      <span
+                        style={{ color: "blue", cursor: "pointer" }}
+                        onClick={handleGoToRegisterPage}
+                      >
                         Click here{" "}
                       </span>
                     </p>

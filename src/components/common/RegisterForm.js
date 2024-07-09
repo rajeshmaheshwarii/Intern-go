@@ -138,7 +138,7 @@ export default function RegisterForm({ isLoggedIn }) {
       }
      
     }
-  }, []);
+  }, [router]);
 
   return (
     <>

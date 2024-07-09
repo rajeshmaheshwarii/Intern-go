@@ -17,8 +17,8 @@ export default function Filter({ course , handleFilterChange }) {
   };
  
   useEffect(() => {
-    handleFilterChange(selectedCategory,selectedPrice)
-  }, [selectedCategory,selectedPrice])
+    handleFilterChange(selectedCategory, selectedPrice);
+  }, [selectedCategory, selectedPrice, handleFilterChange]);
   
 
   return (
