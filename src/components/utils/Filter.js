@@ -25,7 +25,7 @@ export default function Filter({ course , handleFilterChange }) {
     <div style={{display:'flex',flexDirection:'row'}}>
       {/* Category Filter */}
 
-      <FormControl sx={{ m: 1, minWidth: 190 }} variant="standard">
+      <FormControl sx={{ m: 1, minWidth: 190 }} variant="standard" color="secondary"> 
         <InputLabel sx={{color:'black',fontSize:'22px'}}>Select Course Category</InputLabel>
         <Select
           value={selectedCategory}
@@ -43,12 +43,14 @@ export default function Filter({ course , handleFilterChange }) {
 
       {/* Fee filter */}
 
-      <FormControl sx={{ m: 1, minWidth: 100,flex:'1'}} variant="standard">
+      <FormControl sx={{ m: 1, minWidth: 100,flex:'1'}} variant="standard" color="secondary">
         <InputLabel sx={{color:'black',fontSize:'22px'}}>Price Filter</InputLabel>
         <Select
+
           value={selectedPrice}
           onChange={handlePriceChange}
           sx={{ height: "40px"}}
+          
         >
           <MenuItem value="Free">Free</MenuItem>
           <MenuItem value="Paid">Paid</MenuItem>

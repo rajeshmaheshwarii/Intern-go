@@ -1,0 +1,37 @@
+/* editprofile.module.css */
+
+.Container {
+    display: flex;
+    margin-top: 60px;
+    padding: 20px;
+    padding-bottom: 60px;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.EditProfile {
+    width: 100%;
+    max-width: 900px;
+    box-sizing: border-box;
+    flex-direction: column;
+}
+
+
+.ProfileHeading {
+    margin-bottom: 20px; 
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+/* Add any additional custom styles below */
+.TextField {
+    margin-bottom: 16px;
+}
+
+.Button {
+    margin-top: 20px;
+}

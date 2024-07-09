@@ -27,7 +27,7 @@ function Technology() {
   return (
     <>
       <Box>
-        <Typography sx={{fontSize:isSmallScreen? "25px"  : "30px"}}>
+        <Typography sx={{ fontSize: isSmallScreen ? "25px" : "30px" }}>
           Focused Technologies
         </Typography>
         <Divider
@@ -43,7 +43,11 @@ function Technology() {
         <Grid container spacing={2}>
           {TechnologyIcons.map((technology, index) => (
             <Grid item xs={6} sm={2} md={2} key={index}>
-              <Box className={Style.technologyItems}>
+              <Box
+                className={Style.technologyItems}
+                data-aos="zoom-in"
+                  
+              >
                 <Image
                   src={technology}
                   width={isSmallScreen ? 80 : 100}

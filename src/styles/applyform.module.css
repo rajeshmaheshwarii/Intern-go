@@ -1,0 +1,39 @@
+.Container{
+    display: flex;
+    margin-top: 60px;
+    padding: 20px;
+    padding-bottom: 60px;
+    justify-content: center;
+    min-height:100vh;
+    box-sizing: border-box;
+}
+.ApplyForm{
+    width:100%;
+    max-width: 900px;
+    box-sizing: border-box;
+    flex-direction: column;
+}
+.BackToInternship p{
+    display:flex;
+    align-items: center;
+    cursor:pointer;
+    font-size: 16px;
+}
+.InternshipTitle{
+    margin-top: 20px;
+    background-color: rgb(245, 230, 245);
+}
+.InternshipTitle p{
+    margin-top: 20px;
+    font-size: 22px;
+}
+.ActiveStepName {
+    margin-top: 20px;
+    font-size: 22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    /* font-weight: bold; */
+    background-color: rgba(241, 224, 245, 0.726);
+    border-radius: 50px;
+}

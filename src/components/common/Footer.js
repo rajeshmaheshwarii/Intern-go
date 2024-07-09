@@ -56,9 +56,7 @@ function Footer() {
               <li>
                 <AddressIcon />
                 <p>
-                  Main Road,
-                  <br />
-                  Bhuj, Kachchh
+                  Main Road, Bhuj-Kachchh
                   <br />
                   Gujarat, PIN 370001
                   <br />
@@ -110,7 +108,9 @@ function Footer() {
             <p>Newsletter</p>
             <Divider className={Style.FooterTitleDivider} />
           </Box>
-          <Box sx={{ width: '100%' }}> {/* Ensure full width container */}
+          <Box sx={{ width: "100%" }}>
+            {" "}
+            {/* Ensure full width container */}
             <TextField
               variant="outlined"
               fullWidth
@@ -130,12 +130,11 @@ function Footer() {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  "& fieldset": { border: '2px solid white' }, // Sets border color to white
+                  "& fieldset": { border: "2px solid white" }, // Sets border color to white
                   "&:hover fieldset": { borderColor: "white" },
                 },
               }}
             />
-
             <Box
               sx={{
                 display: "flex",
@@ -180,7 +179,7 @@ function Footer() {
                 rel="noopener noreferrer"
               >
                 <InstagramIcon
-                  sx={{ fontSize: "30px", color: " #E4405F" }}
+                  sx={{ fontSize: "30px", color: " red" }}
                   className={Style.footerIcons}
                 />
               </a>
@@ -193,6 +192,7 @@ function Footer() {
           backgroundColor: "#280934",
           display: "flex",
           alignItems: "center",
+          justifyContent: "flex-start",
           color: "white",
           padding: "20px 100px",
         }}

@@ -1,39 +1,54 @@
-// Header.js
-import { Box } from "@mui/material";
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import Drawer from "@mui/material/Drawer";
 import Link from "@mui/material/Link";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import CloseIcon from "@mui/icons-material/Close";
 import Style from "../../styles/header.module.css";
-import { Typography } from "@mui/material";
 import Image from "next/image";
+import AccountMenu from "../Design/AccountMenu";
 
 const Header = () => {
-  const headermenu = ["Home", "Internships", "Login", "Register"];
-  const headermenuIcons = [
-    <HomeOutlinedIcon />,
-    <SchoolOutlinedIcon />,
-    <LoginOutlinedIcon />,
-    <AppRegistrationOutlinedIcon />,
-  ];
-  const Navigationpage = ["/", "/Internships", "/Login", "/Register"];
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage login status
   const router = useRouter();
-  const handleMenuClick = (path) => {
-    console.log("Clicked on menu item with path:", path);
-    router.push(path);
-    setOpen(false);
+
+  useEffect(() => {
+    // Check local storage for isLoggedIn value on component mount
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
+    if (storedIsLoggedIn === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Handle logout action
+    setIsLoggedIn(false); // Update state
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("name");
+    localStorage.removeItem("email");
+    localStorage.removeItem("userID");
+    
+    router.push("/login"); // Redirect to login page or homepage as needed
   };
+
+  const handleProfileClick = () => {
+    router.push("/profile"); // Navigate to profile page
+  };
+
+  const handleDashboardClick = () => {
+    router.push("/dashboard"); // Navigate to dashboard page
+  };
+
+  const headermenu = ["Home", "Internships", isLoggedIn ? "" : "Login", isLoggedIn ? "" : "Register"];
+
+  const Navigationpage = ["/", "/Internships", isLoggedIn ? "/" : "/login", isLoggedIn ? "/" : "/register"];
+
   const isMobile = useMediaQuery("(max-width:600px)");
   const [open, setOpen] = useState(false);
 
@@ -45,13 +60,14 @@ const Header = () => {
     <>
       <Box>
         <Box className={Style.headerContainer}>
-          <Box>
-            {/* <Typography
-              variant="h6"
-              sx={{ fontFamily: "monospace", fontWeight: "700", color: "#fff" }}
-            >
-              Logo Here
-            </Typography> */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
             <Image
               src="/logo.png"
               width={180} // Default width
@@ -61,6 +77,7 @@ const Header = () => {
                 height: { xs: 30, sm: 40, xl: 50 }, // Set height based on breakpoint
               }}
               alt="Logo"
+              onClick={()=> router.push("/")}
             />
           </Box>
           <Box sx={{ display: "flex", gap: "30px" }}>
@@ -69,23 +86,23 @@ const Header = () => {
             )}
             {!isMobile &&
               headermenu.map((menu, index) => (
-                <Typography
-                  variant="h6"
-                  key={menu}
-                  className={Style.menu}
-                  onClick={() => handleMenuClick(Navigationpage[index])}
-                >
-                  
-                  {menu}
-                  {headermenuIcons[index]}
-                </Typography>
+                menu && (
+                  <Typography
+                    key={menu}
+                    className={Style.menu}
+                    onClick={() => router.push(Navigationpage[index])}
+                    variant="h6"
+                  >
+                    {menu}
+                  </Typography>
+                )
               ))}
+            {!isMobile && isLoggedIn && <AccountMenu onLogout={handleLogout} onProfileClick={handleProfileClick} onDashboardClick={handleDashboardClick} />}
           </Box>
         </Box>
       </Box>
 
       {/* Mobile Menu */}
-
       <Box>
         <Drawer open={open} onClose={toggleDrawer(false)}>
           <Box
@@ -117,22 +134,22 @@ const Header = () => {
           >
             <Box sx={{ paddingLeft: "10px" }}>
               {headermenu.map((menu, index) => (
-                <Typography
-                  variant="body1"
-                  key={menu}
-                  className={`${Style.mobileMenu} ${Style.menu}`}
-                  onClick={() => handleMenuClick(Navigationpage[index])}
-                >
-                  {headermenuIcons[index]}
-                  {menu}
-                </Typography>
+                menu && (
+                  <Typography
+                    key={menu}
+                    className={`${Style.mobileMenu} ${Style.menu}`}
+                    onClick={() => router.push(Navigationpage[index])}
+                    variant="body1"
+                  >
+                    {menu}
+                  </Typography>
+                )
               ))}
+              {isLoggedIn && <AccountMenu  onLogout={handleLogout} onProfileClick={handleProfileClick} onDashboardClick={handleDashboardClick} />}
             </Box>
-            <Box>
-              
-            </Box>
+            <Box></Box>
             <Box className={Style.MobileHeaderSocialContainer}>
-              <Typography variant="body1" sx={{ textAlign: "center"  }}>
+              <Typography variant="body1" sx={{ textAlign: "center" }}>
                 Follow us on
               </Typography>
               <Box
@@ -156,7 +173,6 @@ const Header = () => {
                   <InstagramIcon sx={{ fontSize: "30px" }} color="error" />
                 </Link>
               </Box>
-              
             </Box>
           </Box>
         </Drawer>

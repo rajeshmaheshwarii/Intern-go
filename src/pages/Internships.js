@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import courses from "../courses.js";
+import React, { useState, useEffect } from "react";
+import courses from "../data/courses.js";
 import Snackbar from "@mui/material/Snackbar";
 import Filter from "@/components/utils/Filter";
 import Style from "../styles/commoncss.module.css";
-
+import { useRouter } from 'next/router';
+import Header from "@/components/common/Header";
 import {
   useMediaQuery,
   Box,
@@ -17,6 +18,11 @@ import {
   CardActions,
   Button,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -24,16 +30,33 @@ import CertificateIcon from "@mui/icons-material/CardMembership";
 import Image from "next/image.js";
 
 function Internships() {
+  const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const isLargeScreen = useMediaQuery("(min-width:961px)");
   const [openSnackbar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackbarMessage] = useState(null);
   const [finalCourses, setFinalCourses] = useState(courses);
   const [courseFound, setCourseFound] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleApplyInternship = (message) => {
-    setOpenSnackBar(true);
-    setSnackbarMessage(message);
+  const handleApplyInternship = (course) => {
+    if (localStorage.getItem("isLoggedIn")) {
+      router.push({
+        pathname: "/Apply",
+        query: {
+          title: course.title,
+          id: course.id,
+          category: course.category,
+          price: course.price,
+          durationWeek: course.durationWeek,
+          certificate: course.certificate,
+          description: course.description,
+          img: course.img,
+        },
+      });
+    } else {
+      setOpenDialog(true);
+    }
   };
 
   const isCourseAvailable = (filteredCourses) => {
@@ -46,28 +69,30 @@ function Internships() {
   };
 
   const handleFilterChange = (category, price) => {
-    const filteredCourses = courses.filter(course => 
-      (category === "All" || course.category === category) &&
-      (price === "Free" ? course.price < 1 : course.price > 1)
+    const filteredCourses = courses.filter(
+      (course) =>
+        (category === "All" || course.category === category) &&
+        (price === "Free" ? course.price < 1 : course.price > 1)
     );
     console.log(`Category-> ${category} Price-> ${price}`);
     setFinalCourses(filteredCourses);
     setCourseFound(filteredCourses.length > 0);
   };
-  
 
   useEffect(() => {
     console.log(courseFound);
+    document.title = "InternGo - Internships";
   }, [courseFound]);
 
   return (
     <>
+      <Header />
       <Box
         sx={{
-          marginTop: "80px",
+          marginTop: "60px",
           padding: "20px 30px",
+          minHeight: "100vh",
           display: "flex",
-          justifyContent: "space-between",
           flexDirection: "column",
         }}
       >
@@ -79,10 +104,9 @@ function Internships() {
           }}
         >
           <Box>
-            <Typography  sx={{fontSize:isSmallScreen? "25px"  : "30px"}} >
+            <Typography sx={{ fontSize: isSmallScreen ? "25px" : "30px" }}>
               Available Internships
             </Typography>
-         
             <Divider
               sx={{
                 width: "50px",
@@ -92,22 +116,24 @@ function Internships() {
               }}
             />
           </Box>
-
-          {/* Course Filter */}
-
           <Box sx={{ mt: isSmallScreen && "20px" }}>
             <Filter course={courses} handleFilterChange={handleFilterChange} />
           </Box>
         </Box>
 
         {!courseFound && (
-  <Box sx={{ textAlign: "center", marginTop: "50px"}}>
-    {/* <Typography variant="h6">No courses found</Typography> */}
-    <Image src={'/course_not_found.png'} width={200} height={100} alt="Course not found" />  
-     </Box>
-)}
+          <Box sx={{ textAlign: "center", marginTop: "50px" }}>
+            <Image
+              src={"/course_not_found.png"}
+              width={200}
+              height={100}
+              alt="Course not found"
+              data-aos="zoom-in"
+            />
+          </Box>
+        )}
 
-        <Grid container spacing={4} sx={{ marginTop: "20px",marginBottom:'50px' }}>
+        <Grid container spacing={4} sx={{ marginTop: "20px", marginBottom: "50px" }}>
           {finalCourses.map((course, index) => (
             <Grid
               item
@@ -147,9 +173,7 @@ function Internships() {
                         height: "200px",
                         objectFit: "cover",
                       }}
-                     
                     />
-
                     <CardContent>
                       <Typography gutterBottom variant="h6" component="div">
                         {course.title}
@@ -165,7 +189,6 @@ function Internships() {
                           flexWrap: "wrap",
                         }}
                       >
-                        {/* Internship Fees */}
                         <Box
                           sx={{
                             backgroundColor: "#3F2846",
@@ -188,7 +211,6 @@ function Internships() {
                             {course.price < 1 ? "Free" : course.price}
                           </Typography>
                         </Box>
-                        {/* Internship Duration */}
                         <Box
                           sx={{
                             backgroundColor: "#3F2846",
@@ -211,7 +233,6 @@ function Internships() {
                             {course.durationWeek + " weeks"}
                           </Typography>
                         </Box>
-                        {/* Certificate Label */}
                         <Box
                           sx={{
                             backgroundColor: "#3F2846",
@@ -231,9 +252,7 @@ function Internships() {
                             <CertificateIcon
                               sx={{ paddingRight: "3px", fontSize: "14px" }}
                             />
-                            {course.certificate
-                              ? "Certificate"
-                              : "No certificate"}
+                            {course.certificate ? "Certificate" : "No certificate"}
                           </Typography>
                         </Box>
                       </Box>
@@ -251,7 +270,7 @@ function Internships() {
                         backgroundColor: "#392467",
                       },
                     }}
-                    onClick={() => handleApplyInternship(course.title)}
+                    onClick={() => handleApplyInternship(course)}
                   >
                     Apply
                   </Button>
@@ -260,30 +279,29 @@ function Internships() {
             </Grid>
           ))}
         </Grid>
-
-        {/* Snackbar for successfully applied */}
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={openSnackbar}
-          onClose={() => setOpenSnackBar(false)}
-          autoHideDuration={2000}
-          sx={{
-            marginTop: {
-              xs: "60px", // Extra-small screens
-              sm: "60px", // Small screens
-              md: "60px", // Medium screens and up
-            },
-          }}
-        >
-          <Alert
-            onClose={() => setOpenSnackBar(false)}
-            severity="success"
-            variant="standard"
-          >
-            {`Internship application submitted for ${snackBarMessage}`}
-          </Alert>
-        </Snackbar>
       </Box>
+
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Login Required"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          Please log in to your account to proceed with applying for the internship
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => router.push("/login")} color="primary" variant="contained">
+            Login
+          </Button>
+          <Button onClick={() => setOpenDialog(false)} color="error" variant="contained" autoFocus>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

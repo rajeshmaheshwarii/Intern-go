@@ -1,0 +1,71 @@
+.StoryContainer{
+    padding-bottom: 50px;
+}
+
+.StoryItems{
+    display: flex;
+    gap: 30px;
+    /* background-color:#F5F7F8; */
+    background-color: #ECF9FF;
+    padding:10px;
+    border-radius: 10px;
+    
+}
+
+.storyCol1{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.storyCol2{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: space-between;
+    gap:20px;
+}
+
+.storyCol2 p {
+    text-align: justify;
+    color:#26355D;
+}
+.StudentDetails{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.Social_Icons{
+    display:flex;
+    gap:10px;
+}
+.Social_Icons p{
+    transition: transform 0.5s ease;
+}
+.Social_Icons p:hover{
+    transform: translateY(-5px);
+    cursor:pointer;
+}
+
+@media (max-width: 600px) {
+    .StoryItems{
+        display: flex;
+        flex-direction: column;
+    }
+    .Social_Icons p{
+       
+        background-color:;
+        color: #26355D;
+        padding: 5px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #26355D;
+    }
+    .storyCol1{
+        display: flex;
+        align-items: center;
+        justify-content:flex-start;
+    }
+  }

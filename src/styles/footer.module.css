@@ -9,10 +9,10 @@
   background-color: #280934;
   color: white;
   font-size: 18px;
-  margin-top: 30px;
-  padding: 100px;
-  padding-bottom: 20px;
-  border-top-left-radius: 130px;
+  /* margin-top: 30px;  */
+  padding: 20px 100px;
+  /* padding-bottom: 20px; */
+  /* border-top-left-radius: 130px; */
   gap: 50px;
 }
 
@@ -72,21 +72,25 @@
 .footerIcons {
   background-color: white;
   padding: 5px;
-  border-radius: 50px;
+  border-radius: 05px;
+  transition: transform 0.5s ease;
 }
-/* .copyrightcontainer p{
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-} */
+
+.footerIcons:hover {
+ transform: translateY(-5px);
+}
+
 
 
 @media only screen and (max-width: 767px) {
   .footer {
     flex-direction: column;
-    padding: 60px;
-    border-top-left-radius: 100px;
+    padding: 40px;
+    /* border-top-left-radius: 100px; */
   }
   .copyrightcontainer{
     padding: 10px 60px;
+   
   }
   
 }
@@ -102,7 +106,7 @@
     flex: 1 1 calc(25% - 37.5px); /* Four columns in a row with a gap */
   }
 }
-/* styles/footer.module.css */
+
 
 
 
