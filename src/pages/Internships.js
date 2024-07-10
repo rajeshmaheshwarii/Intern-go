@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useCallback} from "react";
 import courses from "../data/courses.js";
 import Snackbar from "@mui/material/Snackbar";
 import Filter from "@/components/utils/Filter";
@@ -39,7 +39,7 @@ function Internships() {
   const [courseFound, setCourseFound] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleApplyInternship = (course) => {
+  const handleApplyInternship = useCallback((course) => {
     if (localStorage.getItem("isLoggedIn")) {
       router.push({
         pathname: "/Apply",
@@ -57,27 +57,27 @@ function Internships() {
     } else {
       setOpenDialog(true);
     }
-  };
+  }, [router]);
 
-  const isCourseAvailable = (filteredCourses) => {
+  const isCourseAvailable = useCallback((filteredCourses) => {
     if (filteredCourses.length > 1) {
       setFinalCourses(filteredCourses);
       setCourseFound(true);
     } else {
       setCourseFound(false);
     }
-  };
+  }, [setFinalCourses, setCourseFound]);
 
-  const handleFilterChange = (category, price) => {
+  const handleFilterChange = useCallback((category, price) => {
     const filteredCourses = courses.filter(
       (course) =>
         (category === "All" || course.category === category) &&
-        (price === "Free" ? course.price < 1 : course.price > 1)
+        (price === "Free"? course.price < 1 : course.price > 1)
     );
     console.log(`Category-> ${category} Price-> ${price}`);
     setFinalCourses(filteredCourses);
     setCourseFound(filteredCourses.length > 0);
-  };
+  }, [courses, setFinalCourses, setCourseFound]);
 
   useEffect(() => {
     console.log(courseFound);

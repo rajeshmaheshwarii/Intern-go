@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Header from "@/components/common/Header";
 import Style from "@/styles/applyform.module.css";
@@ -18,6 +18,11 @@ import {
   ListItemText,
   Checkbox,
   TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import terms from "@/data/terms.js"; // Assuming you have imported your terms array correctly
 
@@ -36,15 +41,96 @@ const ApplyForm = () => {
     id,
   } = router.query;
 
-  const [termsChecked, setTermsChecked] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
   const [internshipData, setInternshipData] = useState({
     user_Id: null,
     internship_Id: null,
     join_date: new Date().toISOString().split("T")[0],
     completion_date: null,
   });
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [joiningMessage, setJoiningMessage] = useState({
+    message: "",
+    isAlreadyJoined : false,
+  });
+
+  const handleCloseJoiningMessage = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOkClick = () => {
+    setOpenDialog(false);
+    if(joiningMessage.isAlreadyJoined){
+      router.push("/Internships");
+    }
+    else{
+      router.push("/dashboard");
+    }
+       
+  
+  };
+
+  const handleSubmitInternship = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:5000/user_internships", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(internshipData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (response.status === 409) {
+          setJoiningMessage({
+            message: `You've already joined the ${title} internship program.`,
+            isAlreadyJoined : true,
+          });
+          setOpenDialog(true); // Open the dialog for the already joined message
+        } else {
+          throw new Error(errorData.error || "Failed to store internship data");
+        }
+      } else {
+        setJoiningMessage({
+          message: `Congratulations! You're now part of the ${title} internship program.`,
+          isAlreadyJoined : false,
+        });
+        setOpenDialog(true); // Open the dialog for the successful join message
+      }
+    } catch (error) {
+      setJoiningMessage({
+        message: "Something went wrong while joining the internship",
+      });
+      setOpenDialog(true); // Open the dialog for the error message
+    }
+  }, [internshipData, title]);
+
+  const handleTermsToggle = useCallback(() => {
+    setTermsChecked((prev) => !prev);
+    if (!termsChecked) {
+      setShowModal(true);
+    }
+  }, [termsChecked]);
+
+  const handleCloseModal = useCallback(() => {
+    setShowModal(false);
+  }, []);
+
+  const handleProceedToPayment = useCallback(() => {
+    setTermsChecked(true);
+    setShowModal(false);
+  }, []);
+
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      handleSubmitInternship();
+    },
+    [handleSubmitInternship]
+  );
 
   useEffect(() => {
     const userId = parseInt(localStorage.getItem("userID"), 10);
@@ -63,59 +149,6 @@ const ApplyForm = () => {
     }
   }, [id]);
 
-  const handleSubmitInternship = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/user_internships", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(internshipData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 409) {
-          // Show alert when user already joined this internship
-          window.alert(`You have already joined ${title} internship`);
-          router.push("/Internships");
-        } else {
-          throw new Error(errorData.error || "Failed to store internship data");
-        }
-      } else {
-        const data = await response.json();
-        alert(`Thank you for joining ${title} Internships`);
-        router.push("/Internships");
-      }
-    } catch (error) {
-      alert("Something went wronge while joining the internship");
-      // Handle error, show error message, etc.
-    }
-  };
-
-  const handleTermsToggle = () => {
-    setTermsChecked((prev) => !prev);
-    if (!termsChecked) {
-      setShowModal(true);
-    }
-  };
-
-  const handleCloseModal = () => {
-    if (!termsChecked) {
-      setShowModal(false);
-    }
-  };
-
-  const handleProceedToPayment = () => {
-    setTermsChecked(true); // Ensure terms are checked before proceeding
-    setShowModal(false); // Close modal on OK click
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    handleSubmitInternship();
-  };
-
   return (
     <>
       <Header />
@@ -128,7 +161,7 @@ const ApplyForm = () => {
             </p>
           </Box>
           <Box className={Style.InternshipTitle}>
-            <Typography variant="h5">{`${title} Intern`}</Typography>
+            <Typography variant="h5">{title} Intern</Typography>
           </Box>
           <Box sx={{ width: "100%", marginTop: 2 }}>
             <Card
@@ -210,9 +243,9 @@ const ApplyForm = () => {
                     borderRadius: 2,
                     maxHeight: "60vh",
                     overflowY: "auto",
-                    margin: "auto", // Center the modal
-                    marginRight: "10px", // Add margin for mobile view
-                    marginLeft: "10px", // Add margin for mobile view
+                    margin: "auto",
+                    marginRight: "10px",
+                    marginLeft: "10px",
                   }}
                 >
                   <Box sx={{ marginBottom: 2 }}>
@@ -254,9 +287,7 @@ const ApplyForm = () => {
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => {
-                      handleSubmitInternship(); // Call to store internship data
-                    }}
+                    onClick={handleSubmitInternship}
                     sx={{ mt: 2 }}
                   >
                     Join Now
@@ -316,6 +347,35 @@ const ApplyForm = () => {
             </Box>
           </Box>
         </Box>
+        <Dialog
+          open={openDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {joiningMessage.message}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleOkClick}
+              color="primary"
+              variant="contained"
+            >
+              {joiningMessage.isAlreadyJoined ? "Ok" : "Dashboard"}
+            </Button>
+            <Button
+              onClick={handleCloseJoiningMessage}
+              color="error"
+              variant="contained"
+              autoFocus
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </>
   );
