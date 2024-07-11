@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { memo } from "react";
 import { Box, Typography } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
@@ -17,7 +18,7 @@ import AccountMenu from "../Design/AccountMenu";
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage login status
   const router = useRouter();
-
+  console.log("header rendered")
   useEffect(() => {
     // Check local storage for isLoggedIn value on component mount
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
@@ -177,8 +178,6 @@ const Header = () => {
           </Box>
         </Drawer>
       </Box>
-    </>
-  );
-};
-
+      </>
+)}
 export default Header;

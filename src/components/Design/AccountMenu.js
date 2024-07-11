@@ -16,8 +16,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import { memo } from 'react';
 
 const AccountMenu = ({ onLogout, onProfileClick, onDashboardClick }) => {
+  console.log("MenuItems rerender")
   const [anchorEl, setAnchorEl] = useState(null);
   const [userName, setUserName] = useState("My Profile");
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -59,6 +61,7 @@ const AccountMenu = ({ onLogout, onProfileClick, onDashboardClick }) => {
     if (storedUserName) {
       setUserName(storedUserName);
     }
+   
   }, []);
 
   const open = Boolean(anchorEl);
@@ -161,4 +164,4 @@ const AccountMenu = ({ onLogout, onProfileClick, onDashboardClick }) => {
   );
 };
 
-export default AccountMenu;
+export default memo(AccountMenu);
