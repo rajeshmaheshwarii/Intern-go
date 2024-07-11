@@ -1,7 +1,0 @@
-{
-    "rewrites": [
-      { "source": "/login", "destination": "/components/common/login" },
-      { "source": "/register", "destination": "/register" }
-    ]
-  }
-  
